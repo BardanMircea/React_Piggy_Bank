@@ -1,46 +1,57 @@
-import React, { useState } from "react";
 import TableEntry from "../model/TableEntry";
 
 interface FormNewEntryProps {
     table : TableEntry[],
-    setTable: any
+    setTable: any,
+    id : number, 
+    setId : any,
+    calculateTotal : any
 }
 
 export const FormNewEntry : React.FC<FormNewEntryProps> = (props) => {
+
+    const {table, setTable, id, setId, calculateTotal} = props
+
     
-    const {table, setTable} = props
+    function addEntry(e :any) {
+        e.preventDefault()
+        setId((prevValue : number) => prevValue + 1)
+        const name = e.currentTarget.name.value
+        const description = e.currentTarget.description.value
+        const price = e.currentTarget.price.value
 
-    const [name, setName] = useState("")
-    const [description, setDescription] = useState("")
-    const [price, setPrice] = useState(0)
-    const [id, setId] = useState(3)
+        let updatedTable = [...table, {id :  id, name: name, description : description, price : price}]
+ 
+        console.log(updatedTable)
 
-    function addEntry() {
-
-        const updatedTable = [...table]
-        updatedTable.push({id: id, name : name, description : description, price : price})
-        setName("")
-        setDescription("")
-        setPrice(0)
-        setId((prevValue) => {
-            return prevValue + 1;
-        })
-
+        calculateTotal(updatedTable)
         setTable(updatedTable)
-        console.log(props.table)
+        e.target.reset()
     }
     
     return (
         <>
-            <h3>Add New Expense</h3>
-            <p>Name</p>
-            <input type="text" onChange={(e) => setName(e.target.value)}/>
-            <p>Description</p>
-            <input type="text" onChange={(e) => setDescription(e.target.value)}/>
-            <p>Price</p>
-            <input type="text" onChange={(e) => setPrice(parseInt(e.target.value))}/>
-
-            <input type="submit" name="Add Expense" onClick={() => addEntry()}/>
+            <form onSubmit={e => addEntry(e)}>
+                <h3>Add New Expense</h3>
+                    <div className="row-container">
+                        <p>Name</p>
+                        <input type="text" name="name"/>
+                    </div>
+                    <div className="row-container">
+                        <p>Description</p>
+                        <input type="text" name="description" />
+                    </div>
+                    <div className="row-container">
+                        <p>Price</p>
+                        <input type="text" name="price"/>
+                    </div>
+                    
+                <div className="btn-submit">
+                    <input type="submit" value="Add Expense"/>
+                </div>
+                
+    
+            </form>
         </>
     )
 }
